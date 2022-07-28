@@ -1,5 +1,5 @@
 /*
-// 28jul22 - ptro - reastructured for readibility
+// 28jul22 - ptro - restructured for readibility, use java script for highlighting
 
 CalDavZAP - the open source CalDAV Web Client
 Copyright (C) 2011-2014
