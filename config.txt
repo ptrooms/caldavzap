@@ -1,5 +1,5 @@
 /*
-// 28jul22 - ptro - restructured for readibility, use java script for highlighting
+// 28jul22 - ptro - restructured for readibility, use java script for
 
 CalDavZAP - the open source CalDAV Web Client
 Copyright (C) 2011-2014
@@ -7,18 +7,18 @@ Copyright (C) 2011-2014
     Andrej Lezo <andrej.lezo@inf-it.com>
     Matej Mihalik <matej.mihalik@inf-it.com>
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Affero General Public License as
-	published by the Free Software Foundation, either version 3 of the
-	License, or (at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Affero General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
 
-	You should have received a copy of the GNU Affero General Public License
-	along with this program. If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 
@@ -31,34 +31,34 @@ Copyright (C) 2011-2014
 //      https://server.com:8443/principals/users/USER/
 //      https://server.com:8443/caldav.php/USER/
 //    INVALID principal URL looks like:
-//      https://server.com:8443/principals/users/USER/collection/	<- url to collection
-//      https://server.com:8443/caldav.php/USER/collection/		<- url to collection
-//      https://server.com:8443/principals/users/USER			<- missing '/'
-//      https://server.com:8443/caldav.php/USER				<- missing '/'
+//      https://server.com:8443/principals/users/USER/collection/    <- url to collection
+//      https://server.com:8443/caldav.php/USER/collection/        <- url to collection
+//      https://server.com:8443/principals/users/USER            <- missing '/'
+//      https://server.com:8443/caldav.php/USER                <- missing '/'
 
 
 // the hrefLabel sets the server name in the resource header 
-/*	- useful if you want to see custom resource header above the collections; 
-	you can use the following variables: 
-		%H = full hostname (including the port number), 	
-		%h = full hostname (without the port number), 
-		%D = full domain name, 
-		%d = only the first and second level domain, 
-		%P = principal name, 
-		%p = principal name without the @domain.com part (if present), 
-		%U = logged user name, 
-		%u = logged user name without the @domain.com part (if present); 
-	if undefined, empty or or null then '%d/%p [%u]' is used
-	*/
+/*    - useful if you want to see custom resource header above the collections; 
+    you can use the following variables: 
+        %H = full hostname (including the port number),     
+        %h = full hostname (without the port number), 
+        %D = full domain name, 
+        %d = only the first and second level domain, 
+        %P = principal name, 
+        %p = principal name without the @domain.com part (if present), 
+        %U = logged user name, 
+        %u = logged user name without the @domain.com part (if present); 
+    if undefined, empty or or null then '%d/%p [%u]' is used
+    */
 
 // the forceReadOnly sets the resource or list of collections as "read-only" - 
-/*	if true then the whole resource will be "read-only"; 
-	if an array of URL encoded collections or regexes 
-		(for example: ['/caldav.php/user/calendar/', '/caldav.php/user%40domain.com/calendar/', 
-			new RegExp('^/caldav.php/user/calendar[0-9]/$', 'i')]) 
-		then specified collections will be marked as "read-only"; 
-	if null (default), unset or unknown then server detected privileges are used
-	*/
+/*    if true then the whole resource will be "read-only"; 
+    if an array of URL encoded collections or regexes 
+        (for example: ['/caldav.php/user/calendar/', '/caldav.php/user%40domain.com/calendar/', 
+            new RegExp('^/caldav.php/user/calendar[0-9]/$', 'i')]) 
+        then specified collections will be marked as "read-only"; 
+    if null (default), unset or unknown then server detected privileges are used
+    */
 
 // the timeOut sets the timeout for jQuery .ajax call (in miliseconds)
 
@@ -67,116 +67,117 @@ Copyright (C) 2011-2014
 // the showHeader shows (true) or hides (false) the resource header in the interface
 
 // the settingsAccount sets the account where client properties are saved during logout and resource/collection synchronisation
-//		(note: set it to true only for ONE account)
+//        (note: set it to true only for ONE account)
 
 /*  the  checkContentType enables content-type checking for server response (only objects with proper content-type are inserted into interface) 
-/*	if you cannot see data in the interface you may try to disable it (useful if your server return wrong value in "propstat/prop/getcontenttype");
-	if undefined content-type checking is enabled
-	*/ 
+/*    if you cannot see data in the interface you may try to disable it (useful if your server return wrong value in "propstat/prop/getcontenttype");
+    if undefined content-type checking is enabled
+    */ 
 
 
 // the delegation sets additional delegated (shared) resources 
-/*	if true then delegation is enabled for all available resources; 
-	if false (default) then delegation is disabled; if an array of URL encoded resources or regexes 
-	(for example: */ ['/caldav.php/user/',
-					'/caldav.php/user%40domain.com/', 
-					new RegExp('^/caldav.php/a[b-x].+/$',
-					'i')] 														// then delegation is enabled for all specified resources
+/*    if true then delegation is enabled for all available resources; 
+    if false (default) then delegation is disabled; if an array of URL encoded resources or regexes 
+    (for example: */ ['/caldav.php/user/',
+                        '/caldav.php/user%40domain.com/', 
+                        new RegExp('^/caldav.php/a[b-x].+/$', 'i')
+                     ]                                                         // then delegation is enabled for all specified resources
 
 
 // the ignoreAlarms defines an array of calendars with disabled alarm - 
-/*	if true then alarm is disabled for all collections; 
-	if false (default) then alarm is enabled for all collections; 
-	if an array of URL encoded collections or regexes 
-	(for example: */ [	'/caldav.php/user/calendar/',
-						'/caldav.php/user%40domain.com/calendar/', 
-						new RegExp('^/caldav.php/user/calendar[0-9]/$', 'i')
-					] 														// then alarm is disabled for all specified collections
+/*    if true then alarm is disabled for all collections; 
+    if false (default) then alarm is enabled for all collections; 
+    if an array of URL encoded collections or regexes 
+    (for example: */ [  '/caldav.php/user/calendar/',
+                        '/caldav.php/user%40domain.com/calendar/', 
+                        new RegExp('^/caldav.php/user/calendar[0-9]/$', 'i')
+                     ]                                                         // then alarm is disabled for all specified collections
 
 // the backgroundCalendars defines an array of background calendars 
-/*	if there is at least one event defined for the given day in a background calendar, 
-		the background color for that day will be pink/light-red; 
-	to use this feature define an array of URL encoded collections or regexes
-	 (for example: */ backgroundCalendars: [
-						'/caldav.php/user/calendar/',
-					 	'/caldav.php/user%40domain.com/calendar/',
-						 new RegExp('^/caldav.php/user/calendar[0-9]/$', 'i')
-					]
+/*    if there is at least one event defined for the given day in a background calendar, 
+        the background color for that day will be pink/light-red; 
+    to use this feature define an array of URL encoded collections or regexes
+     (for example: */ backgroundCalendars: [
+                        '/caldav.php/user/calendar/',
+                         '/caldav.php/user%40domain.com/calendar/',
+                         new RegExp('^/caldav.php/user/calendar[0-9]/$', 'i')
+                      ]
 
 
 // special options not present in the default config (use only if you know what are you doing!):
-//  	the crossDomain sets jQuery ajax crossDomain value (use only if you know what are you doing!) -
-//			 by default null = autodetect /detected setting is shown in the console/
-//  	the withCredentials sets jQuery's ajax withCredentials value for cross domain queries 
-//			(use only if you know what are you doing!); note: if true, Access-Control-Allow-Origin "*" is not allowed
+//      the crossDomain sets jQuery ajax crossDomain value (use only if you know what are you doing!) -
+//             by default null = autodetect /detected setting is shown in the console/
+//      the withCredentials sets jQuery's ajax withCredentials value for cross domain queries 
+//            (use only if you know what are you doing!); note: if true, Access-Control-Allow-Origin "*" is not allowed
 
 // Structure
-	var globalAccountSettings=[
-		{
-			href: 'https://server1.com:8443/caldav.php/USERNAME1/',
-			hrefLabel: null,
-			forceReadOnly: null,
-			showHeader: true,
-			settingsAccount: true,
-			checkContentType: true,
-			userAuth: {userName: 'USERNAME1',
-			userPassword: 'PASSWORD1'},
-			timeOut: 30000,
-			lockTimeOut: 10000,
-			delegation: false,
-			ignoreAlarms: false,
-			backgroundCalendars: []	},
-		{
-			href: 'https://server1.com:8443/principals/users/USERNAME2/',		// the client authenticates against the href URL ENDING /
-			hrefLabel: null,													// server name in the resource header 
-			forceReadOnly: null,												// sets the resource or list of collections as "read-only
-			showHeader: true,													// shows (true) or hides (false) the resource header in the interface
-			settingsAccount: false,												// location client properties are saved during logouy & sync
-			checkContentType: true,												// enables content-type checking for server response
-			userAuth: {userName: 'USERNAME2',									// set of url authenticat is ok
-			userPassword: 'PASSWORD2'},											// set of url authenticat is ok
-			timeOut: 30000,														// timeout for jQuery .ajax call  
-			lockTimeOut: 10000, 												// resource locking , if used (in miliseconds)
-			delegation: false,													// additional delegated (shared) resources
-			ignoreAlarms: false,												// array of calendars with disabled alarm
-			backgroundCalendars: []												// array of background calendars  (coloring pink/light-red;)
-		}
-	];
+    var globalAccountSettings=[
+        {
+            href: 'https://server1.com:8443/caldav.php/USERNAME1/',
+            hrefLabel: null,
+            forceReadOnly: null,
+            showHeader: true,
+            settingsAccount: true,
+            checkContentType: true,
+            userAuth: {userName: 'USERNAME1',
+            userPassword: 'PASSWORD1'},
+            timeOut: 30000,
+            lockTimeOut: 10000,
+            delegation: false,
+            ignoreAlarms: false,
+            backgroundCalendars: []    },
+        {
+            href: 'https://server1.com:8443/principals/users/USERNAME2/',       // the client authenticates against the href URL ENDING /
+            hrefLabel: null,                                                    // server name in the resource header 
+            forceReadOnly: null,                                                // sets the resource or list of collections as "read-only
+            showHeader: true,                                                   // shows (true) or hides (false) the resource header in the interface
+            settingsAccount: false,                                             // location client properties are saved during logouy & sync
+            checkContentType: true,                                             // enables content-type checking for server response
+            userAuth: {userName: 'USERNAME2',                                   // set of url authenticat is ok
+            userPassword: 'PASSWORD2'},                                         // set of url authenticat is ok
+            timeOut: 30000,                                                     // timeout for jQuery .ajax call  
+            lockTimeOut: 10000,                                                 // resource locking , if used (in miliseconds)
+            delegation: false,                                                  // additional delegated (shared) resources
+            ignoreAlarms: false,                                                // array of calendars with disabled alarm
+            backgroundCalendars: []                                             // array of background calendars  (coloring pink/light-red;)
+        }
+    ];
 
 // if set, the client authenticates against the href URL (the last character in href must be '/') and 
-// 		if the authentication is successful it appends the USER + '/' to end of href and sets the userAuth: {userName: USER, userPassword: PASSWORD}
+//         if the authentication is successful it appends the USER + '/' to end of href and sets the userAuth: {userName: USER, userPassword: PASSWORD}
 // then the client uses the modified globalNetworkCheckSettings in the same way as the globalAccountSettings
 // this option ivokes a login screen and disallows access until successfull authentication
 
 // the additionalResources array can contain additional resources (shared resources accessible by all users), 
-/*	for example: */	additionalResources: ['company','customers'] ... href values 
-//	for these resources are created in the same way as described above for the USER
+/*    for example: */    additionalResources: ['company','customers'] ... href values 
+//    for these resources are created in the same way as described above for the USER
 // see globalAccountSettings (above) comments for more information
 
 // Samples:
-	// Lion server example (http + https setup; see misc/readme_lion.txt for server setup):
-			var globalNetworkCheckSettings={href: 'http://lion.server.com:8008/principals/users/', 
-				hrefLabel: null, additionalResources: [], forceReadOnly: null, 
-				showHeader: true, settingsAccount: true, timeOut: 30000, 
-				lockTimeOut: 10000, delegation: false, backgroundCalendars: [], ignoreAlarms: false}
-	
-			var globalNetworkCheckSettings={href: 'https://lion.server.com:8443/principals/users/',
-				hrefLabel: null, additionalResources: [], forceReadOnly: null,
-				showHeader: true, settingsAccount: true, timeOut: 30000,
-				lockTimeOut: 10000, delegation: false, backgroundCalendars: [], ignoreAlarms: false}
+    // Lion server example (http + https setup; see misc/readme_lion.txt for server setup):
+            var globalNetworkCheckSettings={href: 'http://lion.server.com:8008/principals/users/', 
+                hrefLabel: null, additionalResources: [], forceReadOnly: null, 
+                showHeader: true, settingsAccount: true, timeOut: 30000, 
+                lockTimeOut: 10000, delegation: false, backgroundCalendars: [], ignoreAlarms: false}
+    
+            var globalNetworkCheckSettings={href: 'https://lion.server.com:8443/principals/users/',
+                hrefLabel: null, additionalResources: [], forceReadOnly: null,
+                showHeader: true, settingsAccount: true, timeOut: 30000,
+                lockTimeOut: 10000, delegation: false, backgroundCalendars: [], ignoreAlarms: false}
 
-	// DAViCal example (for cross-domain setup see misc/config_davical.txt):
-			var globalNetworkCheckSettings={href: 'http://davical.server.com:8080/caldav.php/', 
-				hrefLabel: null, additionalResources: [], forceReadOnly: null,
-				showHeader: true, settingsAccount: true, timeOut: 30000,
-				lockTimeOut: 10000, delegation: false, backgroundCalendars: [], ignoreAlarms: false}
+    // DAViCal example (for cross-domain setup see misc/config_davical.txt):
+            var globalNetworkCheckSettings={href: 'http://davical.server.com:8080/caldav.php/', 
+                hrefLabel: null, additionalResources: [], forceReadOnly: null,
+                showHeader: true, settingsAccount: true, timeOut: 30000,
+                lockTimeOut: 10000, delegation: false, backgroundCalendars: [], ignoreAlarms: false}
 
-	// Davical example (client installed into Davical subdirectory - works out of the box, no additional setup required):
-			var globalNetworkCheckSettings={
-				href: location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '')+location.pathname.replace(RegExp('/+[^/]+/*(index\.html)?$'),'')+'/caldav.php/',
-				hrefLabel: null, additionalResources: [], forceReadOnly: null,
-				showHeader: true, settingsAccount: true, checkContentType: true, timeOut: 30000,
-				lockTimeOut: 10000, delegation: false, ignoreAlarms: false, backgroundCalendars: []}
+    // Davical example (client installed into Davical subdirectory - works out of the box, no additional setup required):
+            var globalNetworkCheckSettings={
+                href: location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '')
+                                       +location.pathname.replace(RegExp('/+[^/]+/*(index\.html)?$'),'')+'/caldav.php/',
+                hrefLabel: null, additionalResources: [], forceReadOnly: null,
+                showHeader: true, settingsAccount: true, checkContentType: true, timeOut: 30000,
+                lockTimeOut: 10000, delegation: false, ignoreAlarms: false, backgroundCalendars: []}
 
 // if set, the configuration is loaded from the network (using HTTP basic auth) - the returned configuration XML settings are added
 //  to globalAccountSettings ... it is possible to combine this option with the globalAccountSettings although it is not recommended
@@ -184,10 +185,10 @@ Copyright (C) 2011-2014
 // the timeOut sets the timeout for jQuery .ajax call (in miliseconds)
 var globalNetworkAccountSettings={href: 'https://www.config-server.com/auth/', timeOut: 30000};
 // default configuration if the auth module is located in the currect subdirectory
-		var globalNetworkAccountSettings={href: location.protocol+'//'
-				+location.hostname+(location.port ? ':'
-				+location.port : '')
-				+location.pathname.replace(RegExp('index\.html$'),'')+'auth/', timeOut: 30000};
+        var globalNetworkAccountSettings={href: location.protocol+'//'
+                +location.hostname+(location.port ? ':'
+                +location.port : '')
+                +location.pathname.replace(RegExp('index\.html$'),'')+'auth/', timeOut: 30000};
 
 // use jQuery .ajax() auth or custom header for HTTP basic auth (default)
 // set this option to true if your server uses digest auth (note: you may experience auth popups on some browsers)
@@ -218,8 +219,8 @@ var globalInterfaceCustomLanguages=[];
 
 // JavaScript localeCompare() or custom alphabet for data sorting
 //  custom alphabet is used by default because the JavaScript localeCompare() not support collation and often returns "wrong" result
-//var globalSortAlphabet=null;	// use localeCompare()
-var globalSortAlphabet=' 0123456789AÀÁÂÄÆÃÅĀBCÇĆČDĎEÈÉÊËĒĖĘĚFGĞHIÌÍÎİÏĪĮJKLŁĹĽMNŃÑŇOÒÓÔÖŐŒØÕŌPQRŔŘSŚŠȘșŞşẞTŤȚțŢţUÙÚÛÜŰŮŪVWXYÝŸZŹŻŽaàáâäæãåābcçćčdďeèéêëēėęěfgğhiìíîïīįıjklłĺľmnńñňoòóôöőœøõōpqrŕřsśšßtťuùúûüűůūvwxyýÿzźżžАБВГҐДЕЄЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЮЯЬабвгґдеєжзиіїйклмнопрстуфхцчшщюяь';	// use custom alphabet sorting (note: the first character is "space")
+//var globalSortAlphabet=null;    // use localeCompare()
+var globalSortAlphabet=' 0123456789AÀÁÂÄÆÃÅĀBCÇĆČDĎEÈÉÊËĒĖĘĚFGĞHIÌÍÎİÏĪĮJKLŁĹĽMNŃÑŇOÒÓÔÖŐŒØÕŌPQRŔŘSŚŠȘșŞşẞTŤȚțŢţUÙÚÛÜŰŮŪVWXYÝŸZŹŻŽaàáâäæãåābcçćčdďeèéêëēėęěfgğhiìíîïīįıjklłĺľmnńñňoòóôöőœøõōpqrŕřsśšßtťuùúûüűůūvwxyýÿzźżžАБВГҐДЕЄЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЮЯЬабвгґдеєжзиіїйклмнопрстуфхцчшщюяь';    // use custom alphabet sorting (note: the first character is "space")
 
 // search functionality character equivalence (transformation to ASCII: key = regex text, value = result character)
 var globalSearchTransformAlphabet={'[ÀàÁáÂâÄäÆæÃãÅåĀā]': 'a', '[ÇçĆćČč]': 'c', '[Ďď]': 'd', '[ÈèÉéÊêËëĒēĖėĘęĚě]': 'e', '[Ğğ]': 'g', '[ÌìÍíÎîİıÏïĪīĮį]': 'i', '[ŁłĹĺĽľ]': 'l', '[ŃńÑñŇň]': 'n', '[ÒòÓóÔôÖöŐőŒœØøÕõŌō]': 'o', '[ŔŕŘř]': 'r', '[ŚśŠšȘșŞşẞß]': 's', '[ŤťȚțŢţ]': 't', '[ÙùÚúÛûÜüŰűŮůŪū]': 'u', '[ÝýŸÿ]': 'y', '[ŹźŻżŽž]': 'z'};
@@ -276,11 +277,11 @@ var globalOpenFormMode='double';
 
 // set calendar to be selected by default after login (URL encoded path to the calendar, for example: 'USER/calendar/')
 // if empty or undefined the first available calendar is selected automatically
-	var globalCalendarSelected='';
+    var globalCalendarSelected='';
 
 // set todo calendar to be selected by default after login (URL encoded path to the todo calendar, for example: 'USER/todoCalendar/')
 // if empty or undefined the first available todo calendar is selected automatically
-	var globalTodoCalendarSelected='';
+    var globalTodoCalendarSelected='';
 
 // calendar collections stored in this array are loaded after login (if empty then all collections are loaded)
 // note: settings stored on server (see settingsAccount) overwrites this variable
@@ -310,19 +311,19 @@ var globalCalendarEndOfBusiness=17;
 
 // use 12 hours format (AM/PM) for displaying time?
 // note: time format is now predefined for each localization - use this option only if you want to use custom time format instead of the predefined one
-	var globalAMPMFormat=false;
+    var globalAMPMFormat=false;
 
 // format time information of events shown in month and multiweek views
 // if undefined or null, default value will be used
 // if defined as empty string, no time information will be shown
 // see http://arshaw.com/fullcalendar/docs/utilities/formatDate/ for exact formating rules
-	var globalTimeFormatBasic='';
+    var globalTimeFormatBasic='';
 
 // format time information of events shown in agenda (week and day) views
 // if undefined or null, default value will be used
 // if defined as empty string, no time information will be shown
 // see http://arshaw.com/fullcalendar/docs/utilities/formatDate/ for exact formating rules
-	var globalTimeFormatAgenda='';
+    var globalTimeFormatAgenda='';
 
 // display hidden (unchecked calendar) events with certain transparency (true) or remove them from the interface completely (false)
 var globalDisplayHiddenEvents=false;
@@ -373,22 +374,22 @@ var globalWeekendDays=[0, 6];
 var globalAppleRemindersMode=true;
 
 // NOTE: subsribed calendars are NOT "shared" calendars ... 
-//	for "shared" calendars see the delegation option in globalAccountSettings, 
-//		globalNetworkCheckSettings and globalNetworkAccountSettings
+//    for "shared" calendars see the delegation option in globalAccountSettings, 
+//        globalNetworkCheckSettings and globalNetworkAccountSettings
 
 // array of subscribed (read-only) calendars; 
-//		each calendar is identified by an url address (for example: http://something.com/calendar.ics)
-		var globalSubscribedCalendars=
-		{	hrefLabel: 'Subscribed', 
-			showHeader: true,
-			calendars: 
-			[ {		displayName: 'Subscribed Calendar',
-					href: 'http://something.com/calendar.ics',
-					userAuth: {userName: '',
-					userPassword: ''},
-					ignoreAlarm: true,
-					color: '#ff0000',
-					typeList: ['vevent','vtodo'] 
-			} ]
-		};
+//        each calendar is identified by an url address (for example: http://something.com/calendar.ics)
+        var globalSubscribedCalendars=
+        {    hrefLabel: 'Subscribed', 
+            showHeader: true,
+            calendars: 
+            [ {        displayName: 'Subscribed Calendar',
+                    href: 'http://something.com/calendar.ics',
+                    userAuth: {userName: '',
+                    userPassword: ''},
+                    ignoreAlarm: true,
+                    color: '#ff0000',
+                    typeList: ['vevent','vtodo'] 
+            } ]
+        };
 
